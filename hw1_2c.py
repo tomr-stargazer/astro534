@@ -10,6 +10,8 @@ Written by Tom Rice
 from __future__ import division
 
 import numpy as np
+import astropy.units as u
+import astropy.constants as c
 
 def hubble_time(redshift, hubble_constant):
 	""" 
@@ -20,11 +22,11 @@ def hubble_time(redshift, hubble_constant):
 	"""
 
 	z = redshift
-	H_0 = hubble_constant
+	H_0 = u.Quantity(hubble_constant, u.km / u.s / u.Mpc)
 
-	t_H = 2/(3*H_0) * (1 + z)**(3/2)
+	t_H = 2/(3*H_0) * (1 + z)**(-3/2)
 
-	return t_H
+	return t_H.to('Gyr')
 
 def lookback_time(redshift, hubble_constant):
 
@@ -39,15 +41,17 @@ def calculate_values_for_2c(redshift=2, list_of_H0s=[50,70,100]):
 
 	z = redshift
 
+	print "Hubble Time at z={0}".format(z)
 	for H_0 in list_of_H0s:
 
-		print "Hubble Time at z={1} for H_0={0} km s^-1 Mpc^-1:".format(H_0, z)
-		print hubble_time(z, H_0)
+		print "    H_0={0} km s^-1 Mpc^-1:".format(H_0)
+		print "   {0:.2f}".format(hubble_time(z, H_0))
 
+	print "Lookback Time at z={0}".format(z)
 	for H_0 in list_of_H0s:
 
-		print "Lookback Time at z={1} for H_0={0} km s^-1 Mpc^-1:".format(H_0, z)
-		print lookback_time(z, H_0)
+		print "    H_0={0} km s^-1 Mpc^-1:".format(H_0)
+		print "   {0:.2f}".format(lookback_time(z, H_0))
 
 
 
