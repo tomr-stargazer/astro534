@@ -17,6 +17,8 @@ import astropy.constants as c
 
 from scipy.integrate import quad
 
+from hw1_2c import hubble_time
+
 
 def _hubble_time_inner_function(z, omega_matter, omega_lambda):
     return 1 / ((1 + z) * (omega_matter * (1 + z)**3 + omega_lambda)**(1/2))
@@ -68,6 +70,10 @@ def analytic_desitter_distance(redshift, hubble_constant):
     z = redshift
     H_0 = u.Quantity(hubble_constant, u.km / u.s / u.Mpc)
 
+    d_A_z = 2*c.c / H_0 * ( (1+z)**-1 - (1+z)**-3/2)
+
+    return d_A_z.to(u.Mpc)
+
 
 def make_plot_4ab(n_steps=50):
 
@@ -88,9 +94,16 @@ def make_plot_4ab(n_steps=50):
                 z, cosmology['H_0'], cosmology['omega_matter'], 
                 cosmology['omega_lambda']).value
 
-        plt.plot(z_array, tH_array, label=cosmology['name'])
+        plt.plot(z_array, tH_array, 'o', ms=2, label=cosmology['name'])
+
+    analytic_tH_array = hubble_time(z_array, 50)
+
+    plt.plot(z_array, analytic_tH_array, 'r-', zorder=-1, label='Analytic Einstein deSitter')
 
     plt.legend()
+
+    plt.xlabel("Redshift $z$")
+    plt.ylabel("Hubble Time $t_H$ (Gyr)")
     return fig
 
 def make_plot_4c():
