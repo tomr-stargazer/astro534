@@ -61,4 +61,16 @@ def angular_diameter_distance(redshift, hubble_constant, omega_matter, omega_lam
 
     d_A_z = c.c / H_0 * 1/(1+z) *  quad(angular_diameter_integrand, 0, z)[0]
 
-    return d_A_z.to(u.Gpc)
+    return d_A_z.to(u.Mpc)
+
+def make_plot_4ab():
+
+	fig = plt.figure()
+
+	return fig
+
+def make_plot_4c():
+
+	fig = plt.figure()
+
+	return fig
