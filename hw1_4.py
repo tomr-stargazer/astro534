@@ -11,6 +11,7 @@ Written by Tom Rice
 from __future__ import division
 
 import numpy as np
+import matplotlib.pyplot as plt
 import astropy.units as u
 import astropy.constants as c
 
@@ -18,7 +19,6 @@ from scipy.integrate import quad
 
 
 def _hubble_time_inner_function(z, omega_matter, omega_lambda):
-
     return 1 / ((1 + z) * (omega_matter * (1 + z)**3 + omega_lambda)**(1/2))
 
 
@@ -42,11 +42,16 @@ def hubble_time_general(redshift, hubble_constant, omega_matter, omega_lambda):
 
 
 def _angular_diameter_inner_function(z, omega_matter, omega_lambda):
-
 	return 1 / (omega_matter * (1+z)**3 + omega_lambda)**(1/2)
 
 
 def angular_diameter_distance(redshift, hubble_constant, omega_matter, omega_lambda):
+    """
+    Returns angular diameter distance at redshift z using H_0, omega_matter, omega_lambda.
+
+    Assumes H_0 given in km s^-1 Mpc^-1.
+
+    """
 
     z = redshift
     H_0 = u.Quantity(hubble_constant, u.km / u.s / u.Mpc)
