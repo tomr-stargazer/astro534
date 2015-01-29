@@ -42,7 +42,7 @@ def hubble_time_general(redshift, hubble_constant, omega_matter, omega_lambda):
 
 
 def _angular_diameter_inner_function(z, omega_matter, omega_lambda):
-	return 1 / (omega_matter * (1+z)**3 + omega_lambda)**(1/2)
+    return 1 / (omega_matter * (1+z)**3 + omega_lambda)**(1/2)
 
 
 def angular_diameter_distance(redshift, hubble_constant, omega_matter, omega_lambda):
@@ -63,14 +63,38 @@ def angular_diameter_distance(redshift, hubble_constant, omega_matter, omega_lam
 
     return d_A_z.to(u.Mpc)
 
-def make_plot_4ab():
+def analytic_desitter_distance(redshift, hubble_constant):
 
-	fig = plt.figure()
+    z = redshift
+    H_0 = u.Quantity(hubble_constant, u.km / u.s / u.Mpc)
 
-	return fig
+
+def make_plot_4ab(n_steps=50):
+
+    EdS_cosmology = {'name': 'Einstein deSitter', 'omega_matter': 1, 'omega_lambda': 0, 'H_0': 50}
+    LCDM_cosmology = {'name': r'$\Lambda$CDM', 'omega_matter': 0.27, 'omega_lambda': 0.73, 'H_0': 70}
+
+    z_array = np.linspace(0, 10, n_steps)
+
+    fig = plt.figure()
+
+    for cosmology in [EdS_cosmology, LCDM_cosmology]:
+
+        tH_array = np.zeros_like(z_array)
+
+        for i, z in enumerate(z_array):
+
+            tH_array[i] = hubble_time_general(
+                z, cosmology['H_0'], cosmology['omega_matter'], 
+                cosmology['omega_lambda']).value
+
+        plt.plot(z_array, tH_array, label=cosmology['name'])
+
+    plt.legend()
+    return fig
 
 def make_plot_4c():
 
-	fig = plt.figure()
+    fig = plt.figure()
 
-	return fig
+    return fig
