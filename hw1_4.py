@@ -70,7 +70,7 @@ def analytic_desitter_distance(redshift, hubble_constant):
     z = redshift
     H_0 = u.Quantity(hubble_constant, u.km / u.s / u.Mpc)
 
-    d_A_z = 2*c.c / H_0 * ( (1+z)**-1 - (1+z)**-3/2)
+    d_A_z = 2*c.c / H_0 * ( (1+z)**(-1) - (1+z)**(-3/2))
 
     return d_A_z.to(u.Mpc)
 
@@ -102,12 +102,38 @@ def make_plot_4ab(n_steps=50):
 
     plt.legend()
 
-    plt.xlabel("Redshift $z$")
-    plt.ylabel("Hubble Time $t_H$ (Gyr)")
+    plt.xlabel("Redshift $z$", fontsize=18)
+    plt.ylabel("Hubble Time $t_H$ (Gyr)", fontsize=18)
     return fig
 
-def make_plot_4c():
+def make_plot_4c(n_steps=50):
+
+    EdS_cosmology = {'name': 'Einstein deSitter', 'omega_matter': 1, 'omega_lambda': 0, 'H_0': 50}
+    LCDM_cosmology = {'name': r'$\Lambda$CDM', 'omega_matter': 0.27, 'omega_lambda': 0.73, 'H_0': 70}
+
+    z_array = np.linspace(0, 10, n_steps)
 
     fig = plt.figure()
+
+    for cosmology in [EdS_cosmology, LCDM_cosmology]:
+
+        dA_array = np.zeros_like(z_array)
+
+        for i, z in enumerate(z_array):
+
+            dA_array[i] = angular_diameter_distance(
+                z, cosmology['H_0'], cosmology['omega_matter'], 
+                cosmology['omega_lambda']).value
+
+        plt.plot(z_array, dA_array, 'o', ms=2, label=cosmology['name'])
+
+    analytic_dA_array = analytic_desitter_distance(z_array, 50)
+
+    plt.plot(z_array, analytic_dA_array, 'r-', zorder=-1, label='Analytic Einstein deSitter')
+
+    plt.legend()
+
+    plt.xlabel("Redshift $z$", fontsize=18)
+    plt.ylabel("Distance $d_A$ (Mpc)", fontsize=18)
 
     return fig
