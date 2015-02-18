@@ -47,7 +47,7 @@ def _angular_diameter_inner_function(z, omega_matter, omega_lambda):
     return 1 / (omega_matter * (1+z)**3 + omega_lambda)**(1/2)
 
 
-def angular_diameter_distance(redshift, hubble_constant, omega_matter, omega_lambda):
+def angular_diameter_distance(redshift, hubble_constant, omega_matter, omega_lambda, redshift_of_observer=0):
     """
     Returns angular diameter distance at redshift z using H_0, omega_matter, omega_lambda.
 
@@ -56,12 +56,15 @@ def angular_diameter_distance(redshift, hubble_constant, omega_matter, omega_lam
     """
 
     z = redshift
+    z_0 = redshift_of_observer
+    a_0 = 1/(1+z_0)
+
     H_0 = u.Quantity(hubble_constant, u.km / u.s / u.Mpc)
 
     angular_diameter_integrand = lambda z: _angular_diameter_inner_function(
         z, omega_matter, omega_lambda)
 
-    d_A_z = c.c / H_0 * 1/(1+z) *  quad(angular_diameter_integrand, 0, z)[0]
+    d_A_z = a_0 * c.c / H_0 * 1/(1+z) *  quad(angular_diameter_integrand, z_0, z)[0]
 
     return d_A_z.to(u.Mpc)
 
